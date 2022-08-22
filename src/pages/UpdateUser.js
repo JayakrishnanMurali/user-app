@@ -8,7 +8,9 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { getUser, updateUser } from "../api/user";
+import { notifySuccess } from "../utils/Toast";
 
 const UpdateUserPage = () => {
   const [currentUser, setCurrentUser] = useState();

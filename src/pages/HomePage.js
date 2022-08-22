@@ -1,12 +1,12 @@
-import { Box, Button, CircularProgress, LinearProgress } from "@mui/material";
-import React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { LinearProgress } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 import { getUsers } from "../api/user";
 import Filter from "../components/Filter/Filter";
 import Pagination from "../components/Pagination/Pagination";
 import UserCard from "../components/Usercard/UserCard";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { updatedFilter } from "../redux/users/UserSlice";
 
 let PageSize = 6;
