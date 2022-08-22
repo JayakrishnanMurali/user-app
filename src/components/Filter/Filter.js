@@ -14,15 +14,13 @@ const Filter = () => {
 
       <div className="flex">
         <div>
-          <TextField id="outlined-basic" label="User Name" variant="outlined" />
+          <TextField label="User Name" variant="outlined" />
         </div>
 
         <div className="mx-4">
           <FormControl className="w-36">
-            <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+            <InputLabel>Sort By</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
               //   value={age}
               label="Sort By"
               //   onChange={handleChange}
@@ -35,10 +33,8 @@ const Filter = () => {
 
         <div>
           <FormControl className="w-36">
-            <InputLabel id="demo-simple-select-label">Order</InputLabel>
+            <InputLabel>Order</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
               value="asc"
               label="order"
               //   onChange={handleChange}

@@ -1,6 +1,7 @@
 import HomePage from "./pages/HomePage";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ProfilePage from "./pages/ProfilePage";
+import UpdateUserPage from "./pages/UpdateUser";
+import CreateUser from "./pages/CreateUser";
 
 function App() {
   return (
@@ -8,7 +9,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/:id" element={<ProfilePage />} />
+          <Route path="/update/:id" element={<UpdateUserPage />} />
+          <Route path="/create" element={<CreateUser />} />
         </Routes>
       </Router>
     </>

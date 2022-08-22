@@ -15,3 +15,7 @@ export const getUser = async (userId) => {
 export const updateUser = async (userId, userData) => {
   await axios.put(`http://localhost:3333/users/${userId}`, userData);
 };
+
+export const createUser = async (userData) => {
+  await axios.post(`http://localhost:3333/users`, userData);
+};

@@ -1,6 +1,7 @@
 import {
   FormControl,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Select,
   TextField,
@@ -9,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUser, updateUser } from "../api/user";
 
-const ProfilePage = () => {
+const UpdateUserPage = () => {
   const [currentUser, setCurrentUser] = useState();
   const [updatedName, setUpdatedName] = useState();
   const [updatedStatus, setUpdatedStatus] = useState();
@@ -69,7 +70,7 @@ const ProfilePage = () => {
       await updateUser(userId, userData);
       navigate("/");
     } catch (error) {
-      alert("Something wrong happened!");
+      alert("Something went wrong!");
     }
   }
 
@@ -78,15 +79,21 @@ const ProfilePage = () => {
       age: updatedAge,
       avatarUrl: updatedUrl,
       name: updatedName,
-      isPublic: updatedIsPublic,
       statusMessage: updatedStatus,
       isPublic: updatedIsPublic,
+      email: updatedEmail,
+      createdAt: currentUser.createdAt,
     };
 
     if (userData) updateUserDetails(params.id, userData);
   };
 
-  if (!currentUser) return <>Loading..</>;
+  if (!currentUser)
+    return (
+      <>
+        <LinearProgress />
+      </>
+    );
   else
     return (
       <div className="p-16">
@@ -165,4 +172,4 @@ const ProfilePage = () => {
     );
 };
 
-export default ProfilePage;
+export default UpdateUserPage;
