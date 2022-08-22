@@ -1,6 +1,5 @@
 import React from "react";
-import { usePagination, DOTS } from "../../hooks/CustomPagination";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { DOTS, usePagination } from "../../hooks/CustomPagination";
 
 const Pagination = (props) => {
   const {
@@ -45,11 +44,7 @@ const Pagination = (props) => {
       </li>
       {paginationRange.map((pageNumber, ind) => {
         if (pageNumber === DOTS) {
-          return (
-            <li key={ind} className="pagination-item dots">
-              &#8230;
-            </li>
-          );
+          return <li key={ind}>&#8230;</li>;
         }
 
         return (

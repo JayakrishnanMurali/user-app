@@ -5,3 +5,13 @@ export const getUsers = async () => {
     await axios.get("http://localhost:3333/users")
   ).data;
 };
+
+export const getUser = async (userId) => {
+  return await (
+    await axios.get(`http://localhost:3333/users/${userId}`)
+  ).data;
+};
+
+export const updateUser = async (userId, userData) => {
+  await axios.put(`http://localhost:3333/users/${userId}`, userData);
+};
