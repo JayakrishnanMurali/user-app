@@ -6,9 +6,9 @@ import React from "react";
 
 const UserCard = ({ user }) => {
   return (
-    <div className="p-4 cursor-pointer">
+    <div className="md:p-4  cursor-pointer">
       <Card>
-        <CardContent className="flex relative gap-12 justify-start items-center">
+        <CardContent className="flex relative md:gap-12 gap-4 justify-start items-center">
           <div>
             <img
               src={user.avatarUrl}

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { updatedFilter } from "../redux/users/UserSlice";
 
-let PageSize = 5; // CHANGE LATER
+let PageSize = 6;
 
 const HomePage = () => {
   const [users, setUsers] = useState();
@@ -40,16 +40,20 @@ const HomePage = () => {
     );
   else
     return (
-      <div className="p-16 ">
+      <div className="md:p-16 p-8">
         <Filter />
 
-        <div className="my-16 grid grid-cols-3">
+        <div className="md:my-16 my-8  grid lg:grid-cols-3 grid-cols-1 gap-4 md:gap-0">
           {currentTableData?.map((user) => (
             <Link to={`/update/${user.id}`} key={user.id}>
               <UserCard user={user} />
             </Link>
           ))}
         </div>
+
+        {!currentTableData.length && (
+          <h1 className="text-4xl">User Not found!</h1>
+        )}
 
         <div className=" max-w-7xl m-auto flex justify-end mb-12">
           <Link to="/create">

@@ -75,6 +75,15 @@ const UpdateUserPage = () => {
   }
 
   const handleUpdate = () => {
+    if (
+      !updatedAge ||
+      !updatedUrl ||
+      !updatedName ||
+      !updatedStatus ||
+      !updatedEmail
+    )
+      return alert("Please fill every field before submitting");
+
     const userData = {
       age: updatedAge,
       avatarUrl: updatedUrl,
@@ -96,12 +105,12 @@ const UpdateUserPage = () => {
     );
   else
     return (
-      <div className="p-16">
+      <div className="md:p-16 px-4 py-8">
         <h1 className="text-6xl font-bold">User Details</h1>
-        <div className="mt-16 max-w-7xl m-auto  flex items-center  gap-8 shadow-md border p-16">
+        <div className="mt-16 max-w-7xl m-auto  flex md:flex-row flex-col items-center  gap-8 shadow-md border md:p-16 p-4">
           <img
             src={currentUser.avatarUrl}
-            className="w-80 h-80 ml-20 object-cover"
+            className="lg:w-80 lg:h-80 w-52 h-52 md:ml-20 object-cover"
           />
           <div>
             <TextField
@@ -110,7 +119,7 @@ const UpdateUserPage = () => {
               variant="outlined"
               value={updatedName}
               onChange={handleChange}
-              sx={{ width: 600 }}
+              className="w-full"
             />
             <TextField
               id="status"
@@ -118,7 +127,8 @@ const UpdateUserPage = () => {
               variant="outlined"
               value={updatedStatus}
               onChange={handleChange}
-              sx={{ width: 600, marginTop: 3, marginBottom: 3 }}
+              className="w-full"
+              sx={{ marginTop: 3, marginBottom: 3 }}
             />
             <TextField
               id="email"
@@ -126,7 +136,8 @@ const UpdateUserPage = () => {
               variant="outlined"
               value={updatedEmail}
               onChange={handleChange}
-              sx={{ width: 600, marginBottom: 3 }}
+              className="w-full"
+              sx={{ marginBottom: 3 }}
             />
             <TextField
               id="age"
@@ -135,9 +146,11 @@ const UpdateUserPage = () => {
               value={updatedAge}
               variant="outlined"
               onChange={handleChange}
-              sx={{ width: 600, marginBottom: 3 }}
+              className="w-full"
+              sx={{ marginBottom: 3 }}
             />
-            <FormControl sx={{ marginBottom: 3, width: 600 }}>
+
+            <FormControl className="w-full" sx={{ marginBottom: 3 }}>
               <InputLabel>Is Public</InputLabel>
               <Select
                 id="isPublic"
@@ -145,8 +158,8 @@ const UpdateUserPage = () => {
                 label="order"
                 onChange={handleChange}
               >
-                <MenuItem value={true}>YES</MenuItem>
-                <MenuItem value={false}>NO</MenuItem>
+                <MenuItem value={true}>Yes</MenuItem>
+                <MenuItem value={false}>No</MenuItem>
               </Select>
             </FormControl>
             <TextField
@@ -155,7 +168,8 @@ const UpdateUserPage = () => {
               value={updatedUrl}
               variant="outlined"
               onChange={handleChange}
-              sx={{ width: 600, marginBottom: 3 }}
+              className="w-full"
+              sx={{ marginBottom: 3 }}
             />
           </div>
         </div>

@@ -53,6 +53,9 @@ const CreateUserPage = () => {
   }
 
   const handleCreate = () => {
+    if (!name || !status || !email || !age || !url)
+      return alert("Please fill every field before submitting");
+
     const userData = {
       age: age,
       avatarUrl: url,
@@ -67,12 +70,12 @@ const CreateUserPage = () => {
   };
 
   return (
-    <div className="p-16">
+    <div className="md:p-16 px-4 py-8">
       <h1 className="text-6xl font-bold">Create User</h1>
-      <div className="mt-16 max-w-7xl m-auto  flex items-center  gap-8 shadow-md border p-16">
+      <div className="mt-16 max-w-7xl m-auto  flex md:flex-row flex-col items-center  gap-8 shadow-md border md:p-16 p-4">
         <img
           src="https://mhcid.washington.edu/wp-content/uploads/2021/12/placeholder-user-scaled.jpg"
-          className="w-80 h-80 ml-20 object-cover"
+          className="w-80 h-80 md:ml-20 object-cover"
         />
         <div>
           <TextField
@@ -81,7 +84,7 @@ const CreateUserPage = () => {
             variant="outlined"
             value={name}
             onChange={handleChange}
-            sx={{ width: 600 }}
+            className="w-full"
           />
           <TextField
             id="status"
@@ -89,15 +92,18 @@ const CreateUserPage = () => {
             variant="outlined"
             value={status}
             onChange={handleChange}
-            sx={{ width: 600, marginTop: 3, marginBottom: 3 }}
+            sx={{ marginTop: 3, marginBottom: 3 }}
+            className="w-full"
           />
           <TextField
             id="email"
             label="Email"
+            type="email"
             variant="outlined"
             value={email}
             onChange={handleChange}
-            sx={{ width: 600, marginBottom: 3 }}
+            className="w-full"
+            sx={{ marginBottom: 3 }}
           />
           <TextField
             id="age"
@@ -106,9 +112,11 @@ const CreateUserPage = () => {
             value={age}
             variant="outlined"
             onChange={handleChange}
-            sx={{ width: 600, marginBottom: 3 }}
+            className="w-full"
+            sx={{ marginBottom: 3 }}
           />
-          <FormControl sx={{ marginBottom: 3, width: 600 }}>
+
+          <FormControl className="w-full" sx={{ marginBottom: 3 }}>
             <InputLabel>Is Public</InputLabel>
             <Select
               id="isPublic"
@@ -126,7 +134,8 @@ const CreateUserPage = () => {
             value={url}
             variant="outlined"
             onChange={handleChange}
-            sx={{ width: 600, marginBottom: 3 }}
+            className="w-full"
+            sx={{ marginBottom: 3 }}
           />
         </div>
       </div>

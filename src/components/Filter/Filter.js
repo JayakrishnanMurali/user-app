@@ -39,11 +39,11 @@ const Filter = () => {
   };
 
   return (
-    <div className="flex justify-between items-center">
-      <h1 className="text-6xl font-bold">Users</h1>
+    <div className="flex md:flex-row flex-col justify-between items-center">
+      <h1 className="text-6xl font-bold md:mb-0 mb-12">Users</h1>
 
-      <div className="flex">
-        <div>
+      <div className="flex md:flex-row flex-col">
+        <div className="md:mb-0 mb-4">
           <TextField
             value={name}
             onChange={handleNameChange}
@@ -52,8 +52,8 @@ const Filter = () => {
           />
         </div>
 
-        <div className="mx-4">
-          <FormControl className="w-36">
+        <div className="md:mx-4 md:mb-0 mb-4">
+          <FormControl className="md:w-36 w-56">
             <InputLabel>Sort By</InputLabel>
             <Select value={sortBy} label="Sort By" onChange={handleSortChange}>
               <MenuItem value="age">Age</MenuItem>
@@ -62,8 +62,8 @@ const Filter = () => {
           </FormControl>
         </div>
 
-        <div className="mr-4">
-          <FormControl className="w-36">
+        <div className="md:mr-4 md:mb-0 mb-4">
+          <FormControl className="md:w-36 w-56">
             <InputLabel>Order</InputLabel>
             <Select
               value={orderBy}
