@@ -1,11 +1,14 @@
 import Filter from "./components/Filter/Filter";
+import UserCard from "./components/Usercard/UserCard";
 
 function App() {
   return (
-    <div className="p-16">
+    <div className="p-16 ">
       <Filter />
 
-      {/* Card component */}
+      <div className="my-16">
+        <UserCard />
+      </div>
 
       {/* Pagination COmponent */}
 
