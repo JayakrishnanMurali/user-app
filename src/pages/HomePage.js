@@ -6,6 +6,8 @@ import Filter from "../components/Filter/Filter";
 import Pagination from "../components/Pagination/Pagination";
 import UserCard from "../components/Usercard/UserCard";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { updatedFilter } from "../redux/users/UserSlice";
 
 let PageSize = 5; // CHANGE LATER
 
@@ -13,14 +15,16 @@ const HomePage = () => {
   const [users, setUsers] = useState();
   const [currentPage, setCurrentPage] = useState(1);
 
-  async function getUsersData() {
-    let data = await getUsers();
+  const filter = useSelector(updatedFilter);
+
+  async function getUsersData(filter) {
+    let data = await getUsers(filter);
     setUsers(data);
   }
 
   useEffect(() => {
-    if (!users) getUsersData();
-  }, []);
+    getUsersData(filter);
+  }, [filter]);
 
   const currentTableData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * PageSize;
@@ -46,6 +50,7 @@ const HomePage = () => {
             </Link>
           ))}
         </div>
+
         <div className=" max-w-7xl m-auto flex justify-end mb-12">
           <Link to="/create">
             <button
