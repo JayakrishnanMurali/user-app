@@ -1,9 +1,9 @@
+import Filter from "./components/Filter/Filter";
 
 function App() {
   return (
-    <div >
-      <h1>Users</h1>
-      {/* Filter Component */}
+    <div className="p-16">
+      <Filter />
 
       {/* Card component */}
 
