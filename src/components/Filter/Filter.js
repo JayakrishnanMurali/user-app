@@ -11,8 +11,8 @@ import { updateFilter } from "../../redux/users/UserSlice";
 
 const Filter = () => {
   const [name, setName] = useState("");
-  const [sortBy, setSortBy] = useState("");
-  const [orderBy, setOrderBy] = useState("asc");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [orderBy, setOrderBy] = useState("desc");
 
   const dispatch = useDispatch();
 

@@ -5,8 +5,8 @@ export const UserSlice = createSlice({
   initialState: {
     filter: {
       name_like: "",
-      _sort: "",
-      _order: "asc",
+      _sort: "createdAt",
+      _order: "desc",
     },
   },
   reducers: {

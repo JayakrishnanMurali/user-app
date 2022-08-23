@@ -68,7 +68,7 @@ const CreateUserPage = () => {
       statusMessage: status,
       isPublic: isPublic,
       email: email,
-      createdAt: moment.now(),
+      createdAt: new Date().toISOString(),
     };
 
     if (userData) createUserDetails(userData);
