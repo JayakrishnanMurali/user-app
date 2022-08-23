@@ -7,10 +7,10 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { getUser, updateUser } from "../api/user";
-import { notifySuccess } from "../utils/Toast";
+import { updateStatus } from "../redux/alerts/AlertSlice";
 
 const UpdateUserPage = () => {
   const [currentUser, setCurrentUser] = useState();
@@ -23,6 +23,8 @@ const UpdateUserPage = () => {
 
   const params = useParams();
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   async function getUserData(userId) {
     let data = await getUser(userId);
@@ -71,6 +73,7 @@ const UpdateUserPage = () => {
     try {
       await updateUser(userId, userData);
       navigate("/");
+      dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));
     } catch (error) {
       alert("Something went wrong!");
     }

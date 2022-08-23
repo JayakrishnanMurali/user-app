@@ -2,12 +2,15 @@ import { LinearProgress } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUsers } from "../api/user";
 import Filter from "../components/Filter/Filter";
 import Pagination from "../components/Pagination/Pagination";
 import UserCard from "../components/Usercard/UserCard";
+import { updatedStatus } from "../redux/alerts/AlertSlice";
 import { updatedFilter } from "../redux/users/UserSlice";
+import { notifySuccess } from "../utils/Toast";
 
 let PageSize = 6;
 
@@ -16,6 +19,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const filter = useSelector(updatedFilter);
+  const alertStatus = useSelector(updatedStatus);
 
   async function getUsersData(filter) {
     let data = await getUsers(filter);
@@ -25,6 +29,12 @@ const HomePage = () => {
   useEffect(() => {
     getUsersData(filter);
   }, [filter]);
+
+  useEffect(() => {
+    if (alertStatus.status) {
+      notifySuccess(alertStatus.msg);
+    }
+  }, [alertStatus]);
 
   const currentTableData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * PageSize;
@@ -65,6 +75,8 @@ const HomePage = () => {
             </button>
           </Link>
         </div>
+
+        {alertStatus && <ToastContainer />}
 
         <Pagination
           currentPage={currentPage}

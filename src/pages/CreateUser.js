@@ -7,8 +7,10 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { createUser, getUser, updateUser } from "../api/user";
+import { updateStatus } from "../redux/alerts/AlertSlice";
 
 const CreateUserPage = () => {
   const [name, setName] = useState();
@@ -19,6 +21,8 @@ const CreateUserPage = () => {
   const [isPublic, setIsPublic] = useState();
 
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     switch (event.target.id) {
@@ -47,6 +51,7 @@ const CreateUserPage = () => {
     try {
       await createUser(userData);
       navigate("/");
+      dispatch(updateStatus({ status: true, msg: "Successfully created" }));
     } catch (error) {
       alert("Something went wrong!");
     }
