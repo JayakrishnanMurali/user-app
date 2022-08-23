@@ -16,7 +16,7 @@ const Filter = () => {
 
   const dispatch = useDispatch();
 
-  const handleFIlterChange = () => {
+  const handleFilterChange = () => {
     dispatch(
       updateFilter({
         name_like: name,
@@ -80,7 +80,7 @@ const Filter = () => {
 
         <div>
           <button
-            onClick={handleFIlterChange}
+            onClick={handleFilterChange}
             className="bg-gray-400 px-8 py-4 rounded-md hover:bg-gray-600 text-white transition-colors duration-300"
           >
             Filter

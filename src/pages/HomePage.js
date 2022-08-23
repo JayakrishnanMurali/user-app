@@ -1,17 +1,14 @@
-import { LinearProgress, Pagination } from "@mui/material";
+import { Alert, LinearProgress, Pagination, Snackbar } from "@mui/material";
 import { createBrowserHistory } from "history";
-import isEqual from "lodash/isEqual";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUsers } from "../api/user";
 import Filter from "../components/Filter/Filter";
 import UserCard from "../components/Usercard/UserCard";
 import { updatedStatus } from "../redux/alerts/AlertSlice";
 import { updatedFilter } from "../redux/users/UserSlice";
-import { notifySuccess } from "../utils/Toast";
 
 let PageSize = 6;
 
@@ -19,26 +16,23 @@ const HomePage = () => {
   const [users, setUsers] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUserCount, setTotalUserCount] = useState();
+  const [isLoading, setIsloading] = useState(false);
   const filter = useSelector(updatedFilter);
   const alertStatus = useSelector(updatedStatus);
-
-  const [prevFilter, setPrevFilter] = useState({
-    name_like: "",
-    _sort: "createdAt",
-    _order: "desc",
-    _page: 1,
-    _limit: 6,
-  });
+  const [error, setError] = useState(false);
 
   const history = createBrowserHistory();
   const [searchParams, setSearchParams] = useSearchParams();
 
   async function getUsersData(filter) {
     try {
+      setIsloading(true);
       let res;
+      console.log(filter, "filt");
       let pageNum = Number(
         new URLSearchParams(window.location.search).get("_page")
       );
+
       if (pageNum) {
         res = await getUsers({ ...filter, _page: pageNum });
       } else {
@@ -48,25 +42,23 @@ const HomePage = () => {
       setUsers(res.data);
     } catch (e) {
       setUsers([]);
+      setError(true);
       window.location.replace(window.location.origin + "/error");
+    } finally {
+      setIsloading(false);
     }
   }
-
   useEffect(() => {
     getUsersData({
       ...filter,
       _page: new URLSearchParams(window.location.search).get("_page")
-        ? new URLSearchParams(window.location.search).get("_page")
+        ? Number(new URLSearchParams(window.location.search).get("_page"))
         : 1,
-      _limit: new URLSearchParams(window.location.search).get("_limit")
-        ? new URLSearchParams(window.location.search).get("_limit")
-        : PageSize,
     });
   }, [
     filter,
     currentPage,
-    new URLSearchParams(window.location.search).get("_page"),
-    new URLSearchParams(window.location.search).get("_limit"),
+    Number(new URLSearchParams(window.location.search).get("_page")),
   ]);
 
   const handlePageChange = (event, value) => {
@@ -74,13 +66,7 @@ const HomePage = () => {
     setCurrentPage(value);
   };
 
-  useEffect(() => {
-    if (alertStatus.status) {
-      notifySuccess(alertStatus.msg);
-    }
-  }, [alertStatus]);
-
-  if (!users)
+  if (isLoading || error)
     return (
       <>
         <LinearProgress />
@@ -111,8 +97,11 @@ const HomePage = () => {
             </button>
           </Link>
         </div>
-
-        {alertStatus && <ToastContainer />}
+        <Snackbar open={alertStatus.status} autoHideDuration={1000}>
+          <Alert severity="success" sx={{ width: "100%" }}>
+            {alertStatus.msg}
+          </Alert>
+        </Snackbar>
 
         {Math.ceil(totalUserCount / PageSize) > 0 && (
           <div className="w-full flex justify-center">

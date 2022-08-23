@@ -7,9 +7,13 @@ export const getUsers = async (filter) => {
 };
 
 export const getUser = async (userId) => {
-  return await (
-    await axios.get(`http://localhost:3333/users/${userId}/`)
-  ).data;
+  try {
+    return await (
+      await axios.get(`http://localhost:3333/users/${userId}/`)
+    ).data;
+  } catch (e) {
+    window.location.replace(window.location.origin + "/error");
+  }
 };
 
 export const updateUser = async (userId, userData) => {

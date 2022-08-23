@@ -57,7 +57,7 @@ const CreateUserPage = () => {
         break;
       case "status":
         setStatus(event.target.value);
-        if (!event.target.value.match(/^[a-zA-Z]+$/)) {
+        if (!event.target.value.match(/^[a-zA-Z ]+$/)) {
           setStatusError(true);
         } else {
           setStatusError(false);
@@ -65,7 +65,7 @@ const CreateUserPage = () => {
         break;
       case "userName":
         setName(event.target.value);
-        if (!event.target.value.match(/^[a-zA-Z]+$/)) {
+        if (!event.target.value.match(/^[a-zA-Z ]+$/)) {
           setNameError(true);
         } else {
           setNameError(false);
@@ -82,6 +82,9 @@ const CreateUserPage = () => {
       await createUser(userData);
       navigate("/");
       dispatch(updateStatus({ status: true, msg: "Successfully created" }));
+      setTimeout(() => {
+        dispatch(updateStatus({ status: false }));
+      }, 1000);
     } catch (error) {
       window.location.replace(window.location.origin + "/error");
     }

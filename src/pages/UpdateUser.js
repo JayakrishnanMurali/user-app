@@ -20,6 +20,13 @@ const UpdateUserPage = () => {
   const [updatedAge, setUpdatedAge] = useState("");
   const [updatedUrl, setUpdatedUrl] = useState("");
   const [updatedIsPublic, setUpdatedIsPublic] = useState("");
+  const [isLoading, setIsloading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const [nameError, setNameError] = useState(false);
+  const [statusError, setStatusError] = useState(false);
+  const [ageError, setAgeError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -27,8 +34,16 @@ const UpdateUserPage = () => {
   const dispatch = useDispatch();
 
   async function getUserData(userId) {
-    let data = await getUser(userId);
-    setCurrentUser(data);
+    try {
+      setIsloading(true);
+      let data = await getUser(userId);
+      setCurrentUser(data);
+    } catch (e) {
+      setError(true);
+      window.location.replace(window.location.origin + "/error");
+    } finally {
+      setIsloading(false);
+    }
   }
 
   useEffect(() => {
@@ -50,18 +65,44 @@ const UpdateUserPage = () => {
     switch (event.target.id) {
       case "email":
         setUpdatedEmail(event.target.value);
+        if (
+          !event.target.value
+            .toLowerCase()
+            .match(
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )
+        ) {
+          setEmailError(true);
+        } else {
+          setEmailError(false);
+        }
         break;
       case "age":
         setUpdatedAge(event.target.value);
+        if (event.target.value <= 0) {
+          setAgeError(true);
+        } else {
+          setAgeError(false);
+        }
         break;
       case "url":
         setUpdatedUrl(event.target.value);
         break;
       case "status":
         setUpdatedStatus(event.target.value);
+        if (!event.target.value.match(/^[a-zA-Z ]+$/)) {
+          setStatusError(true);
+        } else {
+          setStatusError(false);
+        }
         break;
       case "userName":
         setUpdatedName(event.target.value);
+        if (!event.target.value.match(/^[a-zA-Z ]+$/)) {
+          setNameError(true);
+        } else {
+          setNameError(false);
+        }
         break;
       default:
         setUpdatedIsPublic(event.target.value);
@@ -74,6 +115,9 @@ const UpdateUserPage = () => {
       await updateUser(userId, userData);
       navigate("/");
       dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));
+      setTimeout(() => {
+        dispatch(updateStatus({ status: false }));
+      }, 1000);
     } catch (error) {
       window.location.replace(window.location.origin + "/error");
     }
@@ -89,6 +133,9 @@ const UpdateUserPage = () => {
     )
       return alert("Please fill every field before submitting");
 
+    if (nameError || emailError || statusError || ageError)
+      return alert("Please correct the errors before submitting");
+
     const userData = {
       age: updatedAge,
       avatarUrl: updatedUrl,
@@ -102,7 +149,7 @@ const UpdateUserPage = () => {
     if (userData) updateUserDetails(params.id, userData);
   };
 
-  if (!currentUser)
+  if (isLoading || error)
     return (
       <>
         <LinearProgress />
@@ -124,6 +171,8 @@ const UpdateUserPage = () => {
               variant="outlined"
               value={updatedName}
               onChange={handleChange}
+              error={nameError}
+              helperText={nameError && "Must only be alphabets"}
               className="w-full"
             />
             <TextField
@@ -132,6 +181,8 @@ const UpdateUserPage = () => {
               variant="outlined"
               value={updatedStatus}
               onChange={handleChange}
+              error={statusError}
+              helperText={statusError && "Must only be alphabets"}
               className="w-full"
               sx={{ marginTop: 3, marginBottom: 3 }}
             />
@@ -141,6 +192,8 @@ const UpdateUserPage = () => {
               variant="outlined"
               value={updatedEmail}
               onChange={handleChange}
+              error={emailError}
+              helperText={emailError && "Must be a valid email address"}
               className="w-full"
               sx={{ marginBottom: 3 }}
             />
@@ -151,6 +204,8 @@ const UpdateUserPage = () => {
               value={updatedAge}
               variant="outlined"
               onChange={handleChange}
+              error={ageError}
+              helperText={ageError && "Must be a positive number"}
               className="w-full"
               sx={{ marginBottom: 3 }}
             />
