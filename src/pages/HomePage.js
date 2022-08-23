@@ -28,7 +28,6 @@ const HomePage = () => {
     try {
       setIsloading(true);
       let res;
-      console.log(filter, "filt");
       let pageNum = Number(
         new URLSearchParams(window.location.search).get("_page")
       );
