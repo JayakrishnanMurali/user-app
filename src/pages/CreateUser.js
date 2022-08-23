@@ -5,20 +5,24 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { createUser, getUser, updateUser } from "../api/user";
+import { useNavigate } from "react-router-dom";
+import { createUser } from "../api/user";
 import { updateStatus } from "../redux/alerts/AlertSlice";
 
 const CreateUserPage = () => {
-  const [name, setName] = useState();
-  const [status, setStatus] = useState();
-  const [email, setEmail] = useState();
-  const [age, setAge] = useState();
-  const [url, setUrl] = useState();
-  const [isPublic, setIsPublic] = useState();
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState("");
+  const [email, setEmail] = useState("");
+  const [age, setAge] = useState("");
+  const [url, setUrl] = useState("");
+  const [isPublic, setIsPublic] = useState("");
+
+  const [nameError, setNameError] = useState(false);
+  const [statusError, setStatusError] = useState(false);
+  const [ageError, setAgeError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,18 +32,44 @@ const CreateUserPage = () => {
     switch (event.target.id) {
       case "email":
         setEmail(event.target.value);
+        if (
+          !event.target.value
+            .toLowerCase()
+            .match(
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )
+        ) {
+          setEmailError(true);
+        } else {
+          setEmailError(false);
+        }
         break;
       case "age":
         setAge(event.target.value);
+        if (event.target.value <= 0) {
+          setAgeError(true);
+        } else {
+          setAgeError(false);
+        }
         break;
       case "url":
         setUrl(event.target.value);
         break;
       case "status":
         setStatus(event.target.value);
+        if (!event.target.value.match(/^[a-zA-Z]+$/)) {
+          setStatusError(true);
+        } else {
+          setStatusError(false);
+        }
         break;
       case "userName":
         setName(event.target.value);
+        if (!event.target.value.match(/^[a-zA-Z]+$/)) {
+          setNameError(true);
+        } else {
+          setNameError(false);
+        }
         break;
       default:
         setIsPublic(event.target.value);
@@ -60,6 +90,9 @@ const CreateUserPage = () => {
   const handleCreate = () => {
     if (!name || !status || !email || !age || !url)
       return alert("Please fill every field before submitting");
+
+    if (nameError || emailError || statusError || ageError)
+      return alert("Please correct the errors before submitting");
 
     const userData = {
       age: age,
@@ -88,6 +121,8 @@ const CreateUserPage = () => {
             label="User Name"
             variant="outlined"
             value={name}
+            error={nameError}
+            helperText={nameError && "Must only be alphabets"}
             onChange={handleChange}
             className="w-full"
           />
@@ -95,6 +130,8 @@ const CreateUserPage = () => {
             id="status"
             label="Status Message"
             variant="outlined"
+            error={statusError}
+            helperText={statusError && "Must only be alphabets"}
             value={status}
             onChange={handleChange}
             sx={{ marginTop: 3, marginBottom: 3 }}
@@ -105,6 +142,8 @@ const CreateUserPage = () => {
             label="Email"
             type="email"
             variant="outlined"
+            error={emailError}
+            helperText={emailError && "Must be a valid email address"}
             value={email}
             onChange={handleChange}
             className="w-full"
@@ -115,6 +154,8 @@ const CreateUserPage = () => {
             label="Age"
             type="number"
             value={age}
+            error={ageError}
+            helperText={ageError && "Must be a positive number"}
             variant="outlined"
             onChange={handleChange}
             className="w-full"

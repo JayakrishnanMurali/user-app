@@ -1,4 +1,4 @@
-import { LinearProgress } from "@mui/material";
+import { LinearProgress, Pagination } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -6,11 +6,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUsers } from "../api/user";
 import Filter from "../components/Filter/Filter";
-import Pagination from "../components/Pagination/Pagination";
 import UserCard from "../components/Usercard/UserCard";
 import { updatedStatus } from "../redux/alerts/AlertSlice";
 import { updatedFilter } from "../redux/users/UserSlice";
 import { notifySuccess } from "../utils/Toast";
+import isEqual from "lodash/isEqual";
 
 let PageSize = 6;
 
@@ -20,29 +20,23 @@ const HomePage = () => {
   const [totalUserCount, setTotalUserCount] = useState();
   const filter = useSelector(updatedFilter);
   const alertStatus = useSelector(updatedStatus);
+  const [prevFilter, setPrevFilter] = useState({
+    name_like: "",
+    _sort: "createdAt",
+    _order: "desc",
+    _page: 1,
+    _limit: 6,
+  });
 
   async function getUsersData(filter) {
-    let data = await getUsers(filter);
-    setUsers(data);
-  }
-
-  async function getUsersCount(filter) {
-    let data = await getUsers(filter);
-    setTotalUserCount(data.length);
+    let res = await getUsers(filter);
+    setTotalUserCount(res.headers["x-total-count"]);
+    setUsers(res.data);
   }
 
   useEffect(() => {
     getUsersData(filter);
   }, [filter]);
-
-  useEffect(() => {
-    let filter = {
-      name_like: "",
-      _sort: "createdAt",
-      _order: "desc",
-    };
-    getUsersCount(filter);
-  }, []);
 
   useEffect(() => {
     if (alertStatus.status) {
@@ -57,12 +51,17 @@ const HomePage = () => {
       _limit: 6,
     };
 
-    if (updatedFilter) getUsersData(updatedFilter);
-  }, [currentPage, users]);
+    if (!isEqual(prevFilter, updatedFilter)) getUsersData(updatedFilter);
+    setPrevFilter(updatedFilter);
+  }, [currentPage]);
 
   useEffect(() => {
     currentTableData();
   }, [currentPage]);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   if (!users)
     return (
@@ -97,12 +96,16 @@ const HomePage = () => {
         </div>
 
         {alertStatus && <ToastContainer />}
-        <Pagination
-          currentPage={currentPage}
-          totalCount={totalUserCount}
-          pageSize={PageSize}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
+
+        {Math.ceil(totalUserCount / PageSize) > 0 && (
+          <div className="w-full flex justify-center">
+            <Pagination
+              count={Math.ceil(totalUserCount / PageSize)}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
+          </div>
+        )}
       </div>
     );
 };

@@ -13,13 +13,13 @@ import { getUser, updateUser } from "../api/user";
 import { updateStatus } from "../redux/alerts/AlertSlice";
 
 const UpdateUserPage = () => {
-  const [currentUser, setCurrentUser] = useState();
-  const [updatedName, setUpdatedName] = useState();
-  const [updatedStatus, setUpdatedStatus] = useState();
-  const [updatedEmail, setUpdatedEmail] = useState();
-  const [updatedAge, setUpdatedAge] = useState();
-  const [updatedUrl, setUpdatedUrl] = useState();
-  const [updatedIsPublic, setUpdatedIsPublic] = useState();
+  const [currentUser, setCurrentUser] = useState("");
+  const [updatedName, setUpdatedName] = useState("");
+  const [updatedStatus, setUpdatedStatus] = useState("");
+  const [updatedEmail, setUpdatedEmail] = useState("");
+  const [updatedAge, setUpdatedAge] = useState("");
+  const [updatedUrl, setUpdatedUrl] = useState("");
+  const [updatedIsPublic, setUpdatedIsPublic] = useState("");
 
   const params = useParams();
   const navigate = useNavigate();

@@ -22,6 +22,8 @@ const Filter = () => {
         name_like: name,
         _sort: sortBy,
         _order: orderBy,
+        _page: 1,
+        _limit: 6,
       })
     );
   };

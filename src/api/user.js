@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export const getUsers = async (filter) => {
-  return await (
-    await axios.get("http://localhost:3333/users/", { params: filter })
-  ).data;
+  return await await axios.get("http://localhost:3333/users/", {
+    params: filter,
+  });
 };
 
 export const getUser = async (userId) => {
