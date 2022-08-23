@@ -20,6 +20,7 @@ const HomePage = () => {
   const filter = useSelector(updatedFilter);
   const alertStatus = useSelector(updatedStatus);
   const [error, setError] = useState(false);
+  const [offline, setOflline] = useState(false);
 
   const history = createBrowserHistory();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -64,6 +65,16 @@ const HomePage = () => {
     history.push(`?${new URLSearchParams({ _page: value })}`);
     setCurrentPage(value);
   };
+
+  useEffect(() => {
+    if (!navigator.onLine) setOflline(true);
+    else setOflline(false);
+  }, [navigator]);
+
+  if (offline) {
+    window.location.replace(window.location.origin + "/error");
+    return;
+  }
 
   if (isLoading || error)
     return (
