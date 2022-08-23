@@ -75,7 +75,7 @@ const UpdateUserPage = () => {
       navigate("/");
       dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));
     } catch (error) {
-      alert("Something went wrong!");
+      window.location.replace(window.location.origin + "/error");
     }
   }
 

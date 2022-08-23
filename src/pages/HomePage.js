@@ -1,7 +1,9 @@
 import { LinearProgress, Pagination } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { createBrowserHistory } from "history";
+import isEqual from "lodash/isEqual";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getUsers } from "../api/user";
@@ -10,7 +12,6 @@ import UserCard from "../components/Usercard/UserCard";
 import { updatedStatus } from "../redux/alerts/AlertSlice";
 import { updatedFilter } from "../redux/users/UserSlice";
 import { notifySuccess } from "../utils/Toast";
-import isEqual from "lodash/isEqual";
 
 let PageSize = 6;
 
@@ -20,6 +21,7 @@ const HomePage = () => {
   const [totalUserCount, setTotalUserCount] = useState();
   const filter = useSelector(updatedFilter);
   const alertStatus = useSelector(updatedStatus);
+
   const [prevFilter, setPrevFilter] = useState({
     name_like: "",
     _sort: "createdAt",
@@ -28,40 +30,52 @@ const HomePage = () => {
     _limit: 6,
   });
 
+  const history = createBrowserHistory();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   async function getUsersData(filter) {
-    let res = await getUsers(filter);
-    setTotalUserCount(res.headers["x-total-count"]);
-    setUsers(res.data);
+    try {
+      let res;
+      let pageNum = Number(
+        new URLSearchParams(window.location.search).get("_page")
+      );
+      if (pageNum) {
+        res = await getUsers({ ...filter, _page: pageNum });
+      } else {
+        res = await getUsers(filter);
+      }
+      // history.push(`?${new URLSearchParams(filter)}`);
+      setTotalUserCount(res.headers["x-total-count"]);
+      setUsers(res.data);
+    } catch (e) {
+      setUsers([]);
+      window.location.replace(window.location.origin + "/error");
+    }
   }
 
   useEffect(() => {
-    getUsersData(filter);
-  }, [filter]);
+    getUsersData({
+      ...filter,
+      _page: new URLSearchParams(window.location.search).get("_page")
+        ? new URLSearchParams(window.location.search).get("_page")
+        : 1,
+    });
+  }, [
+    filter,
+    currentPage,
+    new URLSearchParams(window.location.search).get("_page"),
+  ]);
+
+  const handlePageChange = (event, value) => {
+    history.push(`?${new URLSearchParams({ ...filter, _page: value })}`);
+    setCurrentPage(value);
+  };
 
   useEffect(() => {
     if (alertStatus.status) {
       notifySuccess(alertStatus.msg);
     }
   }, [alertStatus]);
-
-  const currentTableData = useCallback(() => {
-    let updatedFilter = {
-      ...filter,
-      _page: currentPage,
-      _limit: 6,
-    };
-
-    if (!isEqual(prevFilter, updatedFilter)) getUsersData(updatedFilter);
-    setPrevFilter(updatedFilter);
-  }, [currentPage]);
-
-  useEffect(() => {
-    currentTableData();
-  }, [currentPage]);
-
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
 
   if (!users)
     return (
@@ -101,7 +115,13 @@ const HomePage = () => {
           <div className="w-full flex justify-center">
             <Pagination
               count={Math.ceil(totalUserCount / PageSize)}
-              page={currentPage}
+              page={
+                Number(new URLSearchParams(window.location.search).get("_page"))
+                  ? Number(
+                      new URLSearchParams(window.location.search).get("_page")
+                    )
+                  : 1
+              }
               onChange={handlePageChange}
             />
           </div>

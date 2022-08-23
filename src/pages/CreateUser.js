@@ -83,7 +83,7 @@ const CreateUserPage = () => {
       navigate("/");
       dispatch(updateStatus({ status: true, msg: "Successfully created" }));
     } catch (error) {
-      alert("Something went wrong!");
+      window.location.replace(window.location.origin + "/error");
     }
   }
 
