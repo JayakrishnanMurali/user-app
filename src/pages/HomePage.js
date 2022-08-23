@@ -44,7 +44,6 @@ const HomePage = () => {
       } else {
         res = await getUsers(filter);
       }
-      // history.push(`?${new URLSearchParams(filter)}`);
       setTotalUserCount(res.headers["x-total-count"]);
       setUsers(res.data);
     } catch (e) {
@@ -59,15 +58,19 @@ const HomePage = () => {
       _page: new URLSearchParams(window.location.search).get("_page")
         ? new URLSearchParams(window.location.search).get("_page")
         : 1,
+      _limit: new URLSearchParams(window.location.search).get("_limit")
+        ? new URLSearchParams(window.location.search).get("_limit")
+        : PageSize,
     });
   }, [
     filter,
     currentPage,
     new URLSearchParams(window.location.search).get("_page"),
+    new URLSearchParams(window.location.search).get("_limit"),
   ]);
 
   const handlePageChange = (event, value) => {
-    history.push(`?${new URLSearchParams({ ...filter, _page: value })}`);
+    history.push(`?${new URLSearchParams({ _page: value })}`);
     setCurrentPage(value);
   };
 
