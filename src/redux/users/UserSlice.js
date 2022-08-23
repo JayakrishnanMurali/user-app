@@ -7,6 +7,8 @@ export const UserSlice = createSlice({
       name_like: "",
       _sort: "createdAt",
       _order: "desc",
+      _page: 1,
+      _limit: 6,
     },
   },
   reducers: {

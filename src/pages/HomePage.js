@@ -1,5 +1,5 @@
 import { LinearProgress } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -17,7 +17,7 @@ let PageSize = 6;
 const HomePage = () => {
   const [users, setUsers] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [totalUserCount, setTotalUserCount] = useState();
   const filter = useSelector(updatedFilter);
   const alertStatus = useSelector(updatedStatus);
 
@@ -26,9 +26,23 @@ const HomePage = () => {
     setUsers(data);
   }
 
+  async function getUsersCount(filter) {
+    let data = await getUsers(filter);
+    setTotalUserCount(data.length);
+  }
+
   useEffect(() => {
     getUsersData(filter);
   }, [filter]);
+
+  useEffect(() => {
+    let filter = {
+      name_like: "",
+      _sort: "createdAt",
+      _order: "desc",
+    };
+    getUsersCount(filter);
+  }, []);
 
   useEffect(() => {
     if (alertStatus.status) {
@@ -36,11 +50,19 @@ const HomePage = () => {
     }
   }, [alertStatus]);
 
-  const currentTableData = useMemo(() => {
-    const firstPageIndex = (currentPage - 1) * PageSize;
-    const lastPageIndex = firstPageIndex + PageSize;
-    return users?.slice(firstPageIndex, lastPageIndex);
+  const currentTableData = useCallback(() => {
+    let updatedFilter = {
+      ...filter,
+      _page: currentPage,
+      _limit: 6,
+    };
+
+    if (updatedFilter) getUsersData(updatedFilter);
   }, [currentPage, users]);
+
+  useEffect(() => {
+    currentTableData();
+  }, [currentPage]);
 
   if (!users)
     return (
@@ -54,16 +76,14 @@ const HomePage = () => {
         <Filter />
 
         <div className="md:my-16 my-8  grid lg:grid-cols-3 grid-cols-1 gap-4 md:gap-0">
-          {currentTableData?.map((user) => (
+          {users?.map((user) => (
             <Link to={`/update/${user.id}`} key={user.id}>
               <UserCard user={user} />
             </Link>
           ))}
         </div>
 
-        {!currentTableData.length && (
-          <h1 className="text-4xl">User Not found!</h1>
-        )}
+        {!users?.length && <h1 className="text-4xl">User Not found!</h1>}
 
         <div className=" max-w-7xl m-auto flex justify-end mb-12">
           <Link to="/create">
@@ -77,10 +97,9 @@ const HomePage = () => {
         </div>
 
         {alertStatus && <ToastContainer />}
-
         <Pagination
           currentPage={currentPage}
-          totalCount={users?.length}
+          totalCount={totalUserCount}
           pageSize={PageSize}
           onPageChange={(page) => setCurrentPage(page)}
         />

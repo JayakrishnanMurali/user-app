@@ -17,10 +17,6 @@ const Pagination = (props) => {
     pageSize,
   });
 
-  if (currentPage === 0 || paginationRange.length < 2) {
-    return null;
-  }
-
   const onNext = () => {
     onPageChange(currentPage + 1);
   };
@@ -39,7 +35,7 @@ const Pagination = (props) => {
           &lt;
         </li>
       )}
-      {paginationRange.map((pageNumber, ind) => {
+      {paginationRange?.map((pageNumber, ind) => {
         if (pageNumber === DOTS) {
           return <li key={ind}>&#8230;</li>;
         }
