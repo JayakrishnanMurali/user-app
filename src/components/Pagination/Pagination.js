@@ -39,7 +39,6 @@ const Pagination = (props) => {
           &lt;
         </li>
       )}
-
       {paginationRange.map((pageNumber, ind) => {
         if (pageNumber === DOTS) {
           return <li key={ind}>&#8230;</li>;
@@ -54,8 +53,7 @@ const Pagination = (props) => {
           </li>
         );
       })}
-
-      {!(currentPage * 6 == totalCount + 1) && (
+      {currentPage !== Math.ceil(totalCount / pageSize) && (
         <li
           onClick={onNext}
           className="text-4xl cursor-pointer flex justify-center text-center "
