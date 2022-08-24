@@ -49,20 +49,30 @@ const HomePage = () => {
     }
   }
   useEffect(() => {
+    let pageParam = new URLSearchParams(window.location.search).get("_page");
+    let nameParam = new URLSearchParams(window.location.search).get(
+      "name_like"
+    );
+    let createdAtParam = new URLSearchParams(window.location.search).get(
+      "_sort"
+    );
+    let orderParam = new URLSearchParams(window.location.search).get("_order");
+
+    if (!pageParam) {
+      setSearchParams({
+        _page: pageParam ? Number(pageParam) : 1,
+        name_like: nameParam ? nameParam : "",
+        _sort: createdAtParam ? createdAtParam : "createdAt",
+        _order: orderParam ? orderParam : "desc",
+      });
+    }
+
     getUsersData({
       ...filter,
-      _page: new URLSearchParams(window.location.search).get("_page")
-        ? Number(new URLSearchParams(window.location.search).get("_page"))
-        : 1,
-      name_like: new URLSearchParams(window.location.search).get("name_like")
-        ? new URLSearchParams(window.location.search).get("name_like")
-        : "",
-      _sort: new URLSearchParams(window.location.search).get("_sort")
-        ? new URLSearchParams(window.location.search).get("_sort")
-        : "createdAt",
-      _order: new URLSearchParams(window.location.search).get("_order")
-        ? new URLSearchParams(window.location.search).get("_order")
-        : "desc",
+      _page: pageParam ? Number(pageParam) : 1,
+      name_like: nameParam ? nameParam : "",
+      _sort: createdAtParam ? createdAtParam : "createdAt",
+      _order: orderParam ? orderParam : "desc",
     });
   }, [
     filter,
@@ -101,8 +111,12 @@ const HomePage = () => {
             <Link
               to={`/update/${user.id}?_page=${Number(
                 new URLSearchParams(window.location.search).get("_page")
-              )}&name_like=${Number(
-                new URLSearchParams(window.location.search).get("name_like")
+              )}&name_like=${new URLSearchParams(window.location.search).get(
+                "name_like"
+              )}&_sort=${new URLSearchParams(window.location.search).get(
+                "_sort"
+              )}&_order=${new URLSearchParams(window.location.search).get(
+                "_order"
               )}`}
               key={user.id}
             >

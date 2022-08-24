@@ -116,7 +116,11 @@ const UpdateUserPage = () => {
       navigate(
         `/?_page=${Number(
           new URLSearchParams(window.location.search).get("_page")
-        )}
+        )}&name_like=${new URLSearchParams(window.location.search).get(
+          "name_like"
+        )}&_sort=${new URLSearchParams(window.location.search).get(
+          "_sort"
+        )}&_order=${new URLSearchParams(window.location.search).get("_order")}
         `
       );
       dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));
