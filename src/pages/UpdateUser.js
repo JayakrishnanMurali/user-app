@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { getUser, updateUser } from "../api/user";
 import { updateStatus } from "../redux/alerts/AlertSlice";
 
@@ -32,6 +32,7 @@ const UpdateUserPage = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   async function getUserData(userId) {
     try {
@@ -114,13 +115,11 @@ const UpdateUserPage = () => {
     try {
       await updateUser(userId, userData);
       navigate(
-        `/?_page=${Number(
-          new URLSearchParams(window.location.search).get("_page")
-        )}&name_like=${new URLSearchParams(window.location.search).get(
-          "name_like"
-        )}&_sort=${new URLSearchParams(window.location.search).get(
-          "_sort"
-        )}&_order=${new URLSearchParams(window.location.search).get("_order")}
+        `/?_page=${Number(searchParams.get("_page") ?? 1)}&name_like=${
+          searchParams.get("name_like") ?? ""
+        }&_sort=${searchParams.get("_sort") ?? "createdAt"}&_order=${
+          searchParams.get("_order") ?? "desc"
+        }
         `
       );
       dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));

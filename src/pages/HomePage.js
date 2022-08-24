@@ -2,7 +2,7 @@ import { Alert, LinearProgress, Pagination, Snackbar } from "@mui/material";
 import { createBrowserHistory } from "history";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { getUsers } from "../api/user";
 import Filter from "../components/Filter/Filter";
@@ -14,7 +14,6 @@ let PageSize = 6;
 
 const HomePage = () => {
   const [users, setUsers] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalUserCount, setTotalUserCount] = useState();
   const [isLoading, setIsloading] = useState(false);
   const filter = useSelector(updatedFilter);
@@ -24,6 +23,11 @@ const HomePage = () => {
 
   const history = createBrowserHistory();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(
+    searchParams.get("_page") ?? 1
+  );
+
+  let location = useLocation();
 
   async function getUsersData(filter) {
     try {
@@ -49,14 +53,10 @@ const HomePage = () => {
     }
   }
   useEffect(() => {
-    let pageParam = new URLSearchParams(window.location.search).get("_page");
-    let nameParam = new URLSearchParams(window.location.search).get(
-      "name_like"
-    );
-    let createdAtParam = new URLSearchParams(window.location.search).get(
-      "_sort"
-    );
-    let orderParam = new URLSearchParams(window.location.search).get("_order");
+    let pageParam = searchParams.get("_page");
+    let nameParam = searchParams.get("name_like");
+    let createdAtParam = searchParams.get("_sort");
+    let orderParam = searchParams.get("_order");
 
     if (!pageParam) {
       setSearchParams({
@@ -74,16 +74,14 @@ const HomePage = () => {
       _sort: createdAtParam ? createdAtParam : "createdAt",
       _order: orderParam ? orderParam : "desc",
     });
-  }, [
-    filter,
-    currentPage,
-    Number(new URLSearchParams(window.location.search).get("_page")),
-  ]);
+  }, [filter, currentPage, location]);
 
   const handlePageChange = (event, value) => {
     history.push(`?${new URLSearchParams({ ...filter, _page: value })}`);
     setCurrentPage(value);
   };
+
+  console.log(currentPage, "test");
 
   useEffect(() => {
     if (!navigator.onLine) setOflline(true);

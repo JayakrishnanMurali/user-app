@@ -38,25 +38,17 @@ const Filter = () => {
   };
 
   useEffect(() => {
-    setName(
-      new URLSearchParams(window.location.search).get("name_like")
-        ? new URLSearchParams(window.location.search).get("name_like")
-        : ""
-    );
+    setName(searchParams.get("name_like") ? searchParams.get("name_like") : "");
     setSortBy(
-      new URLSearchParams(window.location.search).get("_sort")
-        ? new URLSearchParams(window.location.search).get("_sort")
-        : "createdAt"
+      searchParams.get("_sort") ? searchParams.get("_sort") : "createdAt"
     );
     setOrderBy(
-      new URLSearchParams(window.location.search).get("_order")
-        ? new URLSearchParams(window.location.search).get("_order")
-        : "desc"
+      searchParams.get("_order") ? searchParams.get("_order") : "desc"
     );
   }, [
-    new URLSearchParams(window.location.search).get("name_like"),
-    new URLSearchParams(window.location.search).get("_sort"),
-    new URLSearchParams(window.location.search).get("_order"),
+    searchParams.get("_order"),
+    searchParams.get("name_like"),
+    searchParams.get("_sort"),
   ]);
 
   const handleSortChange = (event) => {
