@@ -116,7 +116,8 @@ const UpdateUserPage = () => {
       navigate(
         `/?_page=${Number(
           new URLSearchParams(window.location.search).get("_page")
-        )}`
+        )}
+        `
       );
       dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));
       setTimeout(() => {

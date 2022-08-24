@@ -54,6 +54,15 @@ const HomePage = () => {
       _page: new URLSearchParams(window.location.search).get("_page")
         ? Number(new URLSearchParams(window.location.search).get("_page"))
         : 1,
+      name_like: new URLSearchParams(window.location.search).get("name_like")
+        ? new URLSearchParams(window.location.search).get("name_like")
+        : "",
+      _sort: new URLSearchParams(window.location.search).get("_sort")
+        ? new URLSearchParams(window.location.search).get("_sort")
+        : "createdAt",
+      _order: new URLSearchParams(window.location.search).get("_order")
+        ? new URLSearchParams(window.location.search).get("_order")
+        : "desc",
     });
   }, [
     filter,
@@ -62,7 +71,7 @@ const HomePage = () => {
   ]);
 
   const handlePageChange = (event, value) => {
-    history.push(`?${new URLSearchParams({ _page: value })}`);
+    history.push(`?${new URLSearchParams({ ...filter, _page: value })}`);
     setCurrentPage(value);
   };
 
@@ -92,6 +101,8 @@ const HomePage = () => {
             <Link
               to={`/update/${user.id}?_page=${Number(
                 new URLSearchParams(window.location.search).get("_page")
+              )}&name_like=${Number(
+                new URLSearchParams(window.location.search).get("name_like")
               )}`}
               key={user.id}
             >

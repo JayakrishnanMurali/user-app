@@ -5,8 +5,9 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import { updateFilter } from "../../redux/users/UserSlice";
 
 const Filter = () => {
@@ -15,8 +16,16 @@ const Filter = () => {
   const [orderBy, setOrderBy] = useState("desc");
 
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleFilterChange = () => {
+    setSearchParams({
+      name_like: name,
+      _sort: sortBy,
+      _order: orderBy,
+      _page: 1,
+      _limit: 6,
+    });
     dispatch(
       updateFilter({
         name_like: name,
@@ -27,6 +36,28 @@ const Filter = () => {
       })
     );
   };
+
+  useEffect(() => {
+    setName(
+      new URLSearchParams(window.location.search).get("name_like")
+        ? new URLSearchParams(window.location.search).get("name_like")
+        : ""
+    );
+    setSortBy(
+      new URLSearchParams(window.location.search).get("_sort")
+        ? new URLSearchParams(window.location.search).get("_sort")
+        : "createdAt"
+    );
+    setOrderBy(
+      new URLSearchParams(window.location.search).get("_order")
+        ? new URLSearchParams(window.location.search).get("_order")
+        : "desc"
+    );
+  }, [
+    new URLSearchParams(window.location.search).get("name_like"),
+    new URLSearchParams(window.location.search).get("_sort"),
+    new URLSearchParams(window.location.search).get("_order"),
+  ]);
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
