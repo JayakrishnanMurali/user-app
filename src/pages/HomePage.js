@@ -89,7 +89,12 @@ const HomePage = () => {
 
         <div className="md:my-16 my-8  grid lg:grid-cols-3 grid-cols-1 gap-4 md:gap-0">
           {users?.map((user) => (
-            <Link to={`/update/${user.id}`} key={user.id}>
+            <Link
+              to={`/update/${user.id}?_page=${Number(
+                new URLSearchParams(window.location.search).get("_page")
+              )}`}
+              key={user.id}
+            >
               <UserCard user={user} />
             </Link>
           ))}

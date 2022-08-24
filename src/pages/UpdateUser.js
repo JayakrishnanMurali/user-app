@@ -113,7 +113,11 @@ const UpdateUserPage = () => {
   async function updateUserDetails(userId, userData) {
     try {
       await updateUser(userId, userData);
-      navigate("/");
+      navigate(
+        `/?_page=${Number(
+          new URLSearchParams(window.location.search).get("_page")
+        )}`
+      );
       dispatch(updateStatus({ status: true, msg: "Successfully Updated" }));
       setTimeout(() => {
         dispatch(updateStatus({ status: false }));
