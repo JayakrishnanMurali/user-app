@@ -20,22 +20,27 @@ const HomePage = () => {
   const alertStatus = useSelector(updatedStatus);
   const [error, setError] = useState(false);
   const [offline, setOflline] = useState(false);
-
   const history = createBrowserHistory();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [queryParams, setQueryParams] = useState();
+
   const [currentPage, setCurrentPage] = useState(
     searchParams.get("_page") ?? 1
   );
 
   let location = useLocation();
 
+  useEffect(() => {
+    let params = new URLSearchParams(window.location.search);
+    const obj = Object.fromEntries(params);
+    setQueryParams(obj);
+  }, [location, filter, currentPage]);
+
   async function getUsersData(filter) {
     try {
       setIsloading(true);
       let res;
-      let pageNum = Number(
-        new URLSearchParams(window.location.search).get("_page")
-      );
+      let pageNum = Number(queryParams["_page"]);
 
       if (pageNum) {
         res = await getUsers({ ...filter, _page: pageNum });
@@ -52,36 +57,43 @@ const HomePage = () => {
       setIsloading(false);
     }
   }
-  useEffect(() => {
-    let pageParam = searchParams.get("_page");
-    let nameParam = searchParams.get("name_like");
-    let createdAtParam = searchParams.get("_sort");
-    let orderParam = searchParams.get("_order");
 
-    if (!pageParam) {
-      setSearchParams({
+  useEffect(() => {
+    if (queryParams) {
+      setCurrentPage(Number(queryParams["_page"]));
+    }
+  }, [queryParams]);
+
+  useEffect(() => {
+    if (queryParams) {
+      let pageParam = queryParams["_page"];
+      let nameParam = queryParams["name_like"];
+      let createdAtParam = queryParams["_sort"];
+      let orderParam = queryParams["_order"];
+
+      if (!pageParam) {
+        setSearchParams({
+          _page: pageParam ? Number(pageParam) : 1,
+          name_like: nameParam ? nameParam : "",
+          _sort: createdAtParam ? createdAtParam : "createdAt",
+          _order: orderParam ? orderParam : "desc",
+        });
+      }
+
+      getUsersData({
+        ...filter,
         _page: pageParam ? Number(pageParam) : 1,
         name_like: nameParam ? nameParam : "",
         _sort: createdAtParam ? createdAtParam : "createdAt",
         _order: orderParam ? orderParam : "desc",
       });
     }
-
-    getUsersData({
-      ...filter,
-      _page: pageParam ? Number(pageParam) : 1,
-      name_like: nameParam ? nameParam : "",
-      _sort: createdAtParam ? createdAtParam : "createdAt",
-      _order: orderParam ? orderParam : "desc",
-    });
-  }, [filter, currentPage, location]);
+  }, [queryParams]);
 
   const handlePageChange = (event, value) => {
     history.push(`?${new URLSearchParams({ ...filter, _page: value })}`);
     setCurrentPage(value);
   };
-
-  console.log(currentPage, "test");
 
   useEffect(() => {
     if (!navigator.onLine) setOflline(true);
@@ -108,14 +120,10 @@ const HomePage = () => {
           {users?.map((user) => (
             <Link
               to={`/update/${user.id}?_page=${Number(
-                new URLSearchParams(window.location.search).get("_page")
-              )}&name_like=${new URLSearchParams(window.location.search).get(
-                "name_like"
-              )}&_sort=${new URLSearchParams(window.location.search).get(
-                "_sort"
-              )}&_order=${new URLSearchParams(window.location.search).get(
-                "_order"
-              )}`}
+                queryParams["_page"]
+              )}&name_like=${queryParams["name_like"]}&_sort=${
+                queryParams["_sort"]
+              }&_order=${queryParams["_order"]}`}
               key={user.id}
             >
               <UserCard user={user} />
@@ -146,11 +154,7 @@ const HomePage = () => {
             <Pagination
               count={Math.ceil(totalUserCount / PageSize)}
               page={
-                Number(new URLSearchParams(window.location.search).get("_page"))
-                  ? Number(
-                      new URLSearchParams(window.location.search).get("_page")
-                    )
-                  : 1
+                Number(queryParams["_page"]) ? Number(queryParams["_page"]) : 1
               }
               onChange={handlePageChange}
             />
